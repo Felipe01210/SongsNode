@@ -3,22 +3,27 @@ const { check } = require('express-validator')
 const router = express.Router()
 
 const { getSongs, getSong, postSong, putSong, deleteSong } = require('../controllers/songs');
-const { existsTitle } = require('../helpers/db-validator');
+const { existsTitle, existNotSong } = require('../helpers/db-validator');
 const { validateFields } = require('../helpers/validate-fields');
 
 router.get('/', getSongs);
 router.get('/:id',[
-    check('id').isMongoId()
+    check('id').isMongoId(),
+    validateFields
 ], getSong);
-router.post('/add',[
+router.post('/',[
     check('title').custom(existsTitle),
     validateFields
-], postSong); //mirar titulo repetido
+], postSong);
 router.put('/:id',[
-    check('id').isMongoId()
-], putSong); //controlar edit de title a uno ya existente
+    check('id').isMongoId(),
+    check('title').custom(existsTitle),
+    validateFields
+], putSong);
 router.delete('/:id',[
-    check('id').isMongoId()
-], deleteSong); //json de error
+    check('id').isMongoId(),
+    check('id').custom(existNotSong),
+    validateFields
+], deleteSong);
 
 module.exports = router
