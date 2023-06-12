@@ -20,6 +20,11 @@ const SongsSchema = Schema({
     },
     portada: {
         type: String
+    },
+    genre: {
+        type: Schema.Types.ObjectId,
+        ref: 'Genre',
+        required: true
     }
 })
 
